@@ -64,6 +64,7 @@ jobs:
           tests/integration/banks/ocbc/credit/input.pdf \
           tests/integration/banks/ocbc/debit/input.pdf \
           tests/integration/banks/standard_chartered/credit/input.pdf \
+          tests/integration/banks/standard_chartered/debit/input.pdf \
           tests/integration/banks/trust/credit/input.pdf" \
             --export-json ${{ matrix.target }}-multiple-file-perf.json
 
