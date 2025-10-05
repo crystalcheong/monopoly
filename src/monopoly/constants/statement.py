@@ -88,7 +88,8 @@ class StatementBalancePatterns(RegexEnum):
     )
     OCBC = r"(?P<description>LAST MONTH'S BALANCE?)\s+" + SharedPatterns.AMOUNT_EXTENDED_WITHOUT_EOL
     STANDARD_CHARTERED = (
-        r"(?P<description>BALANCE FROM PREVIOUS STATEMENT?)\s+" + SharedPatterns.AMOUNT_EXTENDED_WITHOUT_EOL
+        r"(?P<description>BALANCE FROM PREVIOUS STATEMENT?)\s+" +
+        SharedPatterns.AMOUNT_EXTENDED_WITHOUT_EOL
     )
     UOB = r"(?P<description>PREVIOUS BALANCE?)\s+" + SharedPatterns.AMOUNT_EXTENDED_WITHOUT_EOL
     TRUST = r"(?P<description>Previous balance?)\s+" + SharedPatterns.AMOUNT_EXTENDED_WITHOUT_EOL
@@ -267,6 +268,13 @@ class DebitTransactionPatterns(RegexEnum):
         rf"(?P<transaction_date>{ISO8601.MMM_DD})\s+"
         + SharedPatterns.DESCRIPTION
         + SharedPatterns.AMOUNT
+        + SharedPatterns.BALANCE
+    )
+    STANDARD_CHARTERED = (
+        r"^(?!.*(?:CLOSING BALANCE|BALANCE FROM PREVIOUS STATEMENT)).*?"  # avoid matching balance lines as transactions
+        rf"(?P<transaction_date>{ISO8601.DD_MMM_YYYY})\s+"
+        + SharedPatterns.DESCRIPTION
+        + rf"(?P<amount>{SharedPatterns.COMMA_FORMAT})\s+"
         + SharedPatterns.BALANCE
     )
     UOB = (

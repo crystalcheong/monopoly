@@ -124,6 +124,7 @@ class DebitStatement(BaseStatement):
 
         result = all([debit_sum in numbers, credit_sum in numbers])
         if not result:
+            logger.debug(f"Debit sum: {debit_sum}, Credit sum: {credit_sum}")
             raise SafetyCheckError(self.failed_safety_message)
 
         return result
