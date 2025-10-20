@@ -49,7 +49,7 @@ class StandardChartered(BankBase):
         [
             MetadataIdentifier(
                 title="eStatement",
-                producer="OpenPDF",
+                producer="OpenPDF 2.0.2",
             ),
             TextIdentifier("Standard Chartered"),
         ]

@@ -183,7 +183,7 @@ class BaseStatement:
 
     def get_transactions(self) -> list[Transaction] | None:
         transactions: list[Transaction] = []
-
+        
         for page_num, page in enumerate(self.pages):
             for line_num, line in enumerate(page.lines):
                 if match := self.pattern.search(line):

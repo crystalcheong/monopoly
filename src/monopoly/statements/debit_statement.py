@@ -122,9 +122,25 @@ class DebitStatement(BaseStatement):
         debit_sum = round(abs(sum(debit_amounts)), 2)
         credit_sum = round(abs(sum(credit_amounts)), 2)
 
+        # Enhanced debug logging
+        logger.debug(f"=== SAFETY CHECK DEBUG ===")
+        logger.debug(f"Total transactions: {len(transactions)}")
+        logger.debug(f"Debit amounts (positive): {debit_amounts}")
+        logger.debug(f"Credit amounts (negative): {credit_amounts}")
+        logger.debug(f"Debit sum: {debit_sum}")
+        logger.debug(f"Credit sum: {credit_sum}")
+        logger.debug(f"All document numbers: {sorted(numbers)}")
+        logger.debug(f"Debit sum in document: {debit_sum in numbers}")
+        logger.debug(f"Credit sum in document: {credit_sum in numbers}")
+        
+        # Show what's missing
+        required = {debit_sum, credit_sum}
+        missing = required - numbers
+        if missing:
+            logger.debug(f"Missing numbers: {missing}")
+
         result = all([debit_sum in numbers, credit_sum in numbers])
         if not result:
-            logger.debug(f"Debit sum: {debit_sum}, Credit sum: {credit_sum}")
-            raise SafetyCheckError(self.failed_safety_message)
+            raise SafetyCheckError(f"{self.failed_safety_message}. Required: {required}, Missing: {missing}")
 
         return result

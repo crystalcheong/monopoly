@@ -88,7 +88,7 @@ class StatementBalancePatterns(RegexEnum):
     )
     OCBC = r"(?P<description>LAST MONTH'S BALANCE?)\s+" + SharedPatterns.AMOUNT_EXTENDED_WITHOUT_EOL
     STANDARD_CHARTERED = (
-        r"(?P<description>BALANCE FROM PREVIOUS STATEMENT?)\s+" +
+        r"(?P<description>(?!(BALANCE FROM PREVIOUS STATEMENT|CLOSING BALANCE)).*?)\s+" +
         SharedPatterns.AMOUNT_EXTENDED_WITHOUT_EOL
     )
     UOB = r"(?P<description>PREVIOUS BALANCE?)\s+" + SharedPatterns.AMOUNT_EXTENDED_WITHOUT_EOL

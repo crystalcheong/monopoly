@@ -20,11 +20,17 @@ class BankDetector:
     def detect_bank(self, banks: list[type["BankBase"]]) -> type["BankBase"] | None:
         """Detect the bank by checking its identifier groups against the document."""
         logger.debug("Found PDF properties: %s", self.metadata_identifier)
+        logger.debug(f"Starting bank detection with {len(banks)} banks")
         for bank in banks:
+            logger.debug(f"Checking bank: {bank.__name__}")
             # A bank is identified if ANY of its identifier groups is a full match
-            if any(self.identifiers_match(group) for group in bank.identifiers):
-                logger.debug("Identified statement bank: %s", bank.__name__)
-                return bank
+            for i, group in enumerate(bank.identifiers):
+                logger.debug(f"  Checking identifier group {i}: {group}")
+                match_result = self.identifiers_match(group)
+                logger.debug(f"  Group {i} matches: {match_result}")
+                if match_result:
+                    logger.debug("Identified statement bank: %s", bank.__name__)
+                    return bank
         return None
 
     def identifiers_match(self, identifiers: list[Identifier]) -> bool:
