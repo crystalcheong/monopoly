@@ -26,7 +26,7 @@ Supported banks:
 | OCBC                                   | ✅                 | ✅                   |
 | Royal Bank of Canada (RBC)             | ✅                 | ✅                   |
 | Scotiabank                             | ✅                 | ✅                   |
-| Standard Chartered                     | ✅                 | ❌                   |
+| Standard Chartered                     | ✅                 | ✅                   |
 | TD Canada Trust                        | ✅                 | ✅                   |
 | Trust                                  | ✅                 | ❌                   |
 | UOB                                    | ✅                 | ✅                   |
