@@ -24,6 +24,7 @@ class BankNames(AutoEnum):
     CITIBANK = auto()
     DBS = auto()
     HSBC = auto()
+    MARIBANK = auto()
     MAYBANK = auto()
     OCBC = auto()
     RBC = auto()
@@ -238,6 +239,12 @@ class DebitTransactionPatterns(RegexEnum):
         rf"(?P<transaction_date>{ISO8601.DD_MM_YYYY})\s+"
         + SharedPatterns.DESCRIPTION
         + SharedPatterns.AMOUNT_EXTENDED_WITHOUT_EOL
+    )
+    MARIBANK = (
+        # Handle both DD MMM format (e.g., "08 JUN") and MMM only format (e.g., "JUN")
+        rf"(?P<transaction_date>{ISO8601.DD_MMM}|{DateFormats.MMM})\s+"
+        r"(?P<description>.*?)\s+"
+        rf"(?P<amount>{SharedPatterns.COMMA_FORMAT})\s*$"
     )
     MAYBANK_MY = (
         rf"(?P<transaction_date>{ISO8601.DD_MM_YY})\s+"

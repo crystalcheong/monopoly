@@ -22,7 +22,7 @@ echo ""
 # Install system dependencies
 echo "🔧 Installing system dependencies..."
 sudo apt-get update -qq
-sudo apt-get install -y build-essential libpoppler-cpp-dev libpoppler-cpp0v5 pkg-config ocrmypdf tesseract-ocr ghostscript
+sudo apt-get install -y build-essential libpoppler-cpp-dev libpoppler-cpp0v5 poppler-utils pkg-config ocrmypdf tesseract-ocr ghostscript
 
 # Update the library cache
 sudo ldconfig

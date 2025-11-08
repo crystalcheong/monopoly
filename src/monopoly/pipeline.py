@@ -35,6 +35,13 @@ class Pipeline:
         if issubclass(parser.bank, GenericBank):
             logger.debug("Using generic statement handler")
             return GenericStatementHandler(parser)
+        
+        # Check for Maribank and use custom handler
+        if hasattr(parser.bank, 'name') and str(parser.bank.name).upper() == 'MARIBANK':
+            logger.debug("Using Maribank statement handler")
+            from monopoly.banks.maribank.handler import StatementHandler as MaribankStatementHandler
+            return MaribankStatementHandler(parser)
+
         logger.debug("Using statement handler with bank: %s", parser.bank.__name__)
         return StatementHandler(parser)
 
