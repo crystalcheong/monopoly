@@ -216,7 +216,8 @@ class BaseStatement:
 
     def _check_bound(self, match: re.Match):
         if (bound := self.config.transaction_bound) and match.span(Columns.AMOUNT)[0] >= bound:
-            logger.debug("Transaction exists beyond boundary, ignoring")
+            logger.debug("Transaction exists beyond boundary, ignoring: %s (bound=%d, amount_pos=%d)", 
+                        match.group(0), bound, match.span(Columns.AMOUNT)[0])
             return True
         return False
 

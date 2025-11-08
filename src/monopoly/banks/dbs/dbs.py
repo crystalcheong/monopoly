@@ -38,7 +38,7 @@ class Dbs(BankBase):
         header_pattern=re.compile(r"(WITHDRAWAL.*DEPOSIT.*BALANCE)"),
         transaction_date_format="%d %b",
         transaction_pattern=DebitTransactionPatterns.DBS,
-        transaction_bound=170,
+        transaction_bound=225,  # Increased from 170 to handle 2025 format changes
     )
 
     consolidated = StatementConfig(
@@ -51,7 +51,7 @@ class Dbs(BankBase):
         header_pattern=re.compile(r"(\s*Date\s+Description\s+Withdrawal.*)"),
         transaction_date_format="%d/%m/%Y",
         transaction_pattern=DebitTransactionPatterns.DBS_POSB_CONSOLIDATED,
-        transaction_bound=220,
+        transaction_bound=225,  # Increased from 220 to handle 2025 format changes
     )
 
     identifiers = [
