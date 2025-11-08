@@ -23,6 +23,7 @@ Supported banks:
 | DBS/POSB                               | ✅                 | ✅                   |
 | HSBC                                   | ✅                 | ❌                   |
 | Maybank                                | ✅                 | ✅                   |
+| Maribank                               | ❌                 | ✅                   |
 | OCBC                                   | ✅                 | ✅                   |
 | Royal Bank of Canada (RBC)             | ✅                 | ✅                   |
 | Scotiabank                             | ✅                 | ✅                   |
@@ -31,7 +32,6 @@ Supported banks:
 | Trust                                  | ✅                 | ❌                   |
 | UOB                                    | ✅                 | ✅                   |
 | Zürcher Kantonalbank                   | ❌                 | ✅                   |
-| Maribank                               | ❌                 | ✅                   |
 
 ## Install
 Monopoly is a pip-installable Python package on [PyPI](https://pypi.org/project/monopoly-core) under the name `monopoly-core`.
