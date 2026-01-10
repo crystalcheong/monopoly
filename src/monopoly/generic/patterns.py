@@ -1,4 +1,5 @@
 import logging
+import re
 from collections import Counter
 from collections.abc import Iterator
 from dataclasses import dataclass, field
@@ -88,6 +89,7 @@ class PatternMatcher:
     def set_date_patterns(self):
         self.dd_mm = DatePattern(ISO8601.DD_MM)
         self.dd_mm_yy = DatePattern(ISO8601.DD_MM_YY)
+        self.dd_mm_yyyy = DatePattern(ISO8601.DD_MM_YYYY)
         self.dd_mmm = DatePattern(ISO8601.DD_MMM)
         self.dd_mmm_yy = DatePattern(ISO8601.DD_MMM_YY)
         self.dd_mmm_yyyy = DatePattern(ISO8601.DD_MMM_YYYY)
@@ -134,6 +136,24 @@ class PatternMatcher:
                 )
         return matches
 
+    @staticmethod
+    def _count_amount_lines(pattern: "DatePattern") -> int:
+        """Count how many of the pattern's matched lines contain monetary amounts."""
+        amount_pattern = re.compile(r"\d{1,3}(,\d{3})*\.\d{2}")
+        return sum(1 for match in pattern.matches if amount_pattern.search(match.line))
+
+    @staticmethod
+    def _get_pattern_specificity(pattern: "DatePattern") -> int:
+        """
+        Get pattern specificity based on the length of matched strings.
+
+        More specific patterns (e.g., dd_mm_yyyy) should be preferred over
+        less specific ones (e.g., dd_mm) when they match the same lines.
+        """
+        if not pattern.matches:
+            return 0
+        return max(len(match.raw_date) for match in pattern.matches)
+
     def get_transaction_pattern(self) -> DatePattern:
         """
         Find the pattern that has the highest occurrence of spans over several lines.
@@ -143,8 +163,14 @@ class PatternMatcher:
 
         Patterns ending with "yy" are analyzed first, to avoid cases where we have
         a tiebreaker with dd_mm and dd_mm_yy variants.
+
+        When span occurrences are tied, prefer patterns that:
+        1. Match lines containing monetary amounts (likely transaction lines)
+        2. Are more specific (match longer date strings)
         """
         max_span_occurrences = 0
+        max_amount_lines = 0
+        max_specificity = 0
         most_common_pattern = None
 
         # Sort patterns so that those ending with "yy" come last
@@ -153,9 +179,24 @@ class PatternMatcher:
         for pattern in sorted_patterns:
             if counter := pattern.span_occurrences:
                 for _, num_occurrences in counter.most_common(2):
-                    if num_occurrences >= max_span_occurrences:
+                    if num_occurrences > max_span_occurrences:
                         most_common_pattern = pattern
                         max_span_occurrences = num_occurrences
+                        max_amount_lines = self._count_amount_lines(pattern)
+                        max_specificity = self._get_pattern_specificity(pattern)
+                    elif num_occurrences == max_span_occurrences:
+                        amount_lines = self._count_amount_lines(pattern)
+                        specificity = self._get_pattern_specificity(pattern)
+
+                        # Tiebreaker 1: prefer patterns matching lines with amounts
+                        if amount_lines > max_amount_lines:
+                            most_common_pattern = pattern
+                            max_amount_lines = amount_lines
+                            max_specificity = specificity
+                        # Tiebreaker 2: prefer more specific patterns (longer date matches)
+                        elif amount_lines == max_amount_lines and specificity > max_specificity:
+                            most_common_pattern = pattern
+                            max_specificity = specificity
 
         if most_common_pattern:
             logger.debug(

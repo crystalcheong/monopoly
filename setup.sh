@@ -32,7 +32,7 @@ ldconfig -p | grep poppler
 
 # Install Python dependencies
 echo "📚 Installing Python dependencies..."
-pip install -e .
+pip install -e ".[ocr]"
 uv sync --extra ocr
 
 echo "✅ Setup complete!"

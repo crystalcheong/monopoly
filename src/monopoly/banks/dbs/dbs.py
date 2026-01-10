@@ -61,7 +61,7 @@ class Dbs(BankBase):
         ],
         [
             TextIdentifier("DBS"),
-            MetadataIdentifier(creator="Quadient"),
+            MetadataIdentifier(creator="Quadient~Inspire"),
         ],
     ]
 
