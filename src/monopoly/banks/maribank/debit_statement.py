@@ -62,7 +62,7 @@ class DebitStatement(GenericDebitStatement):
         """
         Override multiline description handling for Maribank transactions.
         
-        For multiline transactions, concatenate all related lines including prefixes.
+        For multiline transactions, concatenate up to 3 lines total including all prefixes.
         """
         if not context.multiline_config or not context.multiline_config.multiline_descriptions:
             return context.description
@@ -72,21 +72,20 @@ class DebitStatement(GenericDebitStatement):
             return "Interest"
 
         description_parts = []
+        max_lines = 3  # Maximum total lines to concatenate
         
-        # Look at preceding lines for customer name or category prefixes
+        # Look at preceding lines for prefixes (customer name, category, etc.)
         idx = context.idx - 1
         prefix_lines = []
-        while idx >= 0:
+        while idx >= 0 and len(prefix_lines) < max_lines - 1:  # Leave room for main description
             line = context.lines[idx].strip()
             
             # Stop if we hit an empty line or a date line
             if not line or re.match(r'\d{2}\s+\w{3}|\w{3}\s+\d', line):
                 break
-                
-            # Collect customer names and category lines as prefixes
-            if line.startswith('CHEONG YU QING') or line.startswith('SPEND'):
-                prefix_lines.insert(0, line)  # Insert at beginning to maintain order
             
+            # Collect all non-empty, non-date lines as prefixes
+            prefix_lines.insert(0, line)  # Insert at beginning to maintain order
             idx -= 1
         
         # Add prefix lines first
@@ -96,26 +95,22 @@ class DebitStatement(GenericDebitStatement):
         description_parts.append(context.description.strip())
         
         # Look at subsequent lines for additional description content
+        # Only add if we haven't reached max_lines yet
         idx = context.idx + 1
-        while idx < len(context.lines):
+        while idx < len(context.lines) and len(description_parts) < max_lines:
             line = context.lines[idx].strip()
             
             # Stop if we hit an empty line or a new transaction (date line)
             if not line or re.match(r'\d{2}\s+\w{3}|\w{3}\s+\d', line):
                 break
-                
-            # Skip customer names and category lines since we already collected them
-            if line.startswith('CHEONG YU QING') or line.startswith('SPEND'):
-                idx += 1
-                continue
-                
+            
             # Add this line to the description
             description_parts.append(line)
             idx += 1
         
-        # Join all parts with a space
-        combined_description = ' '.join(description_parts)
-        logger.debug(f"Combined multiline description: '{combined_description}'")
+        # Join all parts with a space, limiting to max_lines
+        combined_description = ' '.join(description_parts[:max_lines])
+        logger.debug(f"Combined multiline description ({len(description_parts[:max_lines])} lines): '{combined_description}'")
         
         return combined_description
 
