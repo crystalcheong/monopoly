@@ -129,18 +129,22 @@ class Pipeline:
     def load(
         transactions: list[Transaction],
         statement: BaseStatement,
-        output_directory: Path,
+        output_directory: Path | str,
+        *,
+        preserve_filename: bool,
     ):
-        if isinstance(output_directory, str):
-            output_directory = Path(output_directory)
+        output_directory = Path(output_directory)
 
-        filename = generate_name(
-            statement=statement,
-            format_type="file",
-            bank_name=statement.bank_name,
-            statement_type=statement.statement_type,
-            statement_date=statement.statement_date,
-        )
+        if preserve_filename and statement.file_path:
+            filename = f"{Path(statement.file_path).stem}.csv"
+        else:
+            filename = generate_name(
+                statement=statement,
+                format_type="file",
+                bank_name=statement.bank_name,
+                statement_type=statement.statement_type,
+                statement_date=statement.statement_date,
+            )
 
         output_path = output_directory / filename
         logger.debug("Writing CSV to file path: %s", output_path)

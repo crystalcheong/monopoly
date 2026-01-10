@@ -1,5 +1,54 @@
 # Changelog
 
+## [0.19.7] - 2025-12-22
+
+### 🚜 Refactor
+
+- Avoid rebuilding decimal numbers per line
+- *(statements/base)* Reduce dot-lookup overhead
+- *(statements/base)* Reduce nesting in get_transactions
+- *(statements/base)* Move context creation inside of process_match
+- *(statements/base)* Combine transaction match and transaction groupdict
+
+### 📚 Documentation
+
+- *(CLAUDE)* Add initial claude.md file
+
+### ⚙️ Miscellaneous Tasks
+
+- *(statements/base)* Initialise previous_transaction_date early
+- *(statements/base)* Fix mypy issues
+- *(banks/trust)* Add support for optional posting date
+
+## [0.19.6] - 2025-12-08
+
+### ⛰️ Features
+
+- *(cli)* Add preserve filenames option
+
+### ⚙️ Miscellaneous Tasks
+
+- *(banks/dbs)* Add metadata for recent statements
+- Remove redundant gate for output_directory coercion
+
+### Build
+
+- *(deps)* Bump actions/checkout from 5 to 6
+
+## [0.19.5] - 2025-11-24
+
+### ⛰️ Features
+
+- *(credit/citi)* Fall back to filename for month/year inference
+
+### 🚜 Refactor
+
+- Gate filename fallback behind config
+
+### Build
+
+- *(deps)* Bump astral-sh/setup-uv from 6 to 7
+
 ## [0.19.4] - 2025-11-02
 
 ### 🛠️ Bug Fixes
